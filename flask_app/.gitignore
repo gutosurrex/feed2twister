@@ -1,0 +1,8 @@
+conf.py
+*.db
+README.html
+*.pyc
+*.swp
+*~
+*.conf
+user_shortener.py

@@ -1,0 +1,35 @@
+[DEFAULT]
+# e.g 'thedod'
+username = MYTWISTERUSERNAME
+# change to rpcuser and rpcpassword from ~/.twister/twister.conf
+rpc_url = http://MYRPCUSER:MYRPCPASSWORD@127.0.0.1:28332
+# db is mainly there to keep track of "what not to post again" :) (debugging too, I guess)
+db_filename = ~/.feed2twister.db
+# this leaves 36 characters and a ... to get to 140. If we don't have that, we skip the item :(
+max_url_length = 100
+# Use your own feeds, of course :)
+feeds = https://swatwt.com/favs/rss/en
+        https://github.com/thedod.atom
+        https://github.com/milouse.atom
+
+
+# All the following options are optional
+
+# For deployment. It's on a don't wanna know basis :)
+# logging_level = error
+logging_level = debug
+# we don't want to flood more than that in a single run.
+max_new_items_per_feed = 3
+# use_shortener (case insensitive):
+# * False [default] - no shortener
+# * Is.gd [or True (for backward-compatibility)] -- Dependencies:
+#   * https://github.com/torre76/gd_shortener
+# * Ur1.ca [Less tor-hostile] -- Dependencies:
+#   * https://github.com/legoktm/ur1
+#   * https://github.com/MiCHiLU/python-functools32
+# * user_shortener -- roll your own
+#   * write a user_shortener.py file with a shorten(long_url)
+#     that returns a short url. May the source be with you.
+use_shortener = False
+# tell is.gd to publicly show statistics for the shortened url
+shortener_stats = True
