@@ -10,7 +10,7 @@ from random_words import RandomWords
 def gen_captcha(text, fnt, fnt_sz, file_name, fmt='JPEG'):
 	"""Generate a captcha image"""
 	# randomly select the foreground color
-	fgcolor = random.randint(0,0xffff00)
+	fgcolor = random.randint(0,0xffffff)
 	# make the background color the opposite of fgcolor
 	bgcolor = fgcolor ^ 0xffffff
 	# create a font object 
