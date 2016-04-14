@@ -107,7 +107,7 @@ def main(max_items):
             if eid in db.keys() and not args.repost_existing:  # been there, done that (or not - for a reason)
                 logging.debug('Skipping duplicate {0}'.format(eid))
 
-            else: # format as a <=140 character string
+            else: # format as a <=240 character string
                 if not get_bool_conf_option('do_not_include_link'):
                     # Construct the link, possibly with shortener
                     entry_url = str(shorten(e.link))
@@ -126,11 +126,11 @@ def main(max_items):
                     msg = u'{0}'.format(entry_title)
 
 
-                if len(msg)>140: # Truncate (and hope it's still meaningful)
+                if len(msg)>240: # Truncate (and hope it's still meaningful)
                     msg = msg[:137]+u'...'
 
 
-                utfmsg = truncated_utf8(msg,140)# limit is 140 utf-8 bytes (not chars)
+                utfmsg = truncated_utf8(msg,240)# limit is 240 utf-8 bytes (not chars)
                 msg = unicode(utfmsg,'utf-8') # AuthServiceProxy needs unicode [we just needed to know where to truncate, and that's utf-8]
                 if not msg: # We've marked it as "posted", but no sense really posting it.
                     logging.warn(u'Link too long at {0}'.format(eid))
@@ -152,7 +152,7 @@ def main(max_items):
                             continue
                         # this is a *new* message we're skipping. build some fake post message in case
                         # we want to have a look at the database for debugging or such
-                        utf8msg = truncated_utf8(u'Skipped: {0}'.format(e.title), 140)
+                        utf8msg = truncated_utf8(u'Skipped: {0}'.format(e.title), 240)
                         db[eeid] = utf8msg
                     break
 
