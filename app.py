@@ -6,7 +6,7 @@ import captcha
 import logging
 logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -36,7 +36,7 @@ def view():
         temp = [key, value]
         outputlist.append(temp)
     db.close()
-    return jsonify(outputlist)
+    return render_template('view.html', feeds=outputlist)
 
 @app.route('/data')
 def names():
