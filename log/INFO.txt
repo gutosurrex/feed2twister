@@ -1,0 +1,4 @@
+Here is where the log file should come.
+
+Note that by default the next run of the process will erase previous logs.
+

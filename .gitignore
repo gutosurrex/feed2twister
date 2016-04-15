@@ -6,4 +6,5 @@ README.html
 *~
 *.conf
 *.jpg
+*.log
 user_shortener.py
