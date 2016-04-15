@@ -6,4 +6,5 @@ README.html
 *~
 *.conf
 *.jpg
+feed2twister.conf
 user_shortener.py
