@@ -1,0 +1,3 @@
+Here is where the databases should be stored:
+
+feeds.db - stores the names of feeds with the corresponding urls

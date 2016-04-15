@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Adding another RSS to Twister</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div id="container">
+            <div class="title">
+                <h1>Choose the feed</h1>
+            </div>
+            <div id="content">
+                <form method="post" action="{{ url_for('submitted') }}">
+                  <label for="user">Please enter an available username:</label>
+                  <input type="text" name="user" /><br />
+                  <label for="feedurl">Please enter the feed URL:</label>
+                  <input type="text" name="feedurl" /><br />
+                  <img src={{ filename }} alt="Captcha" style="height:80px;">
+                  <label for="captcha">Please enter the code above:</label>
+                  <input type="text" name="captcha" /><br />
+                  <input type="hidden" name="hash" value="{{ hash }}">
+                  <input type="submit" name="submit" />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
