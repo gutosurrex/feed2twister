@@ -17,7 +17,8 @@
                   <img src={{ filename }} alt="Captcha" style="height:80px;">
                   <label for="captcha">Please enter the code above:</label>
                   <input type="text" name="captcha" /><br />
-                  <input type="submit" />
+                  <input type="hidden" name="hash" value="{{ hash }}">
+                  <input type="submit" name="submit" />
                 </form>
             </div>
         </div>

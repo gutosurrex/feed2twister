@@ -4,6 +4,7 @@ import captcha
 import hashlib
 import random
 import string
+import datetime
 
 import logging
 logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
@@ -14,7 +15,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from random_words import RandomWords
 
-#from bitcoinrpc.authproxy import AuthServiceProxy
+secret = 'fj28sdkfj1lwkdjf8s8dufh1kkkk'
 
 app = Flask(__name__)
 
@@ -24,31 +25,43 @@ limiter = Limiter(
     global_limits=["20 per day", "1 per second"],
 )
 
-secret = 'fj28sdkfj1lwkdjf8s8dufh1kkkk'
-
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+def clean():
+    dir_to_search = os.path.curdir
+    for dirpath, dirnames, filenames in os.walk('static/captchas/'):
+        for file in filenames:
+            curpath = os.path.join(dirpath, file)
+            file_modified = datetime.datetime.fromtimestamp(os.path.getmtime(curpath))
+            if datetime.datetime.now() - file_modified > datetime.timedelta(hours=1):
+                os.remove(curpath)
 
 @app.route('/')
 @limiter.limit("20 per day")
 def index():
-    #word = new_word()
+    clean()
     word = id_generator()
     hash = hashlib.sha224(word + secret).hexdigest()
     filename = 'static/captchas/' + hash + '.jpg'
     captcha.gen_captcha(word, 'static/porkys.ttf', 25, filename, fmt='JPEG')
-    return render_template('form.html', filename = filename)
+    return render_template('form.html', filename = filename, hash = hash)
 
 @app.route('/submitted/', methods=['POST'])
 def submitted():
     user = request.form['user']
+    hash = str(request.form['hash'])
     feedurl = request.form['feedurl']
     captcha = request.form['captcha']
-    hash = hashlib.sha224(captcha + secret).hexdigest()
     filename = 'static/captchas/' + hash + '.jpg'
-    if os.path.isfile(filename):
+    db = anydbm.open(os.path.expanduser('data/used.db'), 'c')
+    if hash in db.keys():
+        return render_template('repeated.html')
+    db[hash] = 'yes'
+    db.close()
+    if hash == hashlib.sha224(captcha + secret).hexdigest():
         return render_template('thanks.html', user = user, feedurl = feedurl)
-    return 'error'
+    return render_template('error.html')
 
 @app.route('/view')
 @limiter.limit("200 per day")

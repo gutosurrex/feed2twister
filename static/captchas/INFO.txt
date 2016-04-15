@@ -1,3 +1,0 @@
-Here is where the captchas will be temporarily available.
-
-A cron-job should clean old files in this folder.

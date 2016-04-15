@@ -27,12 +27,12 @@ edit it so that it contains similar settings to those you had at `conf.py`
    and copy the bitcoinrpc directory into this directory (overwrite
    whatever you have ther now. probably an empty folder).
 
- * run `cd RandomWords-0.1.5`, and `sudo python setup.py install`.
-
  * run `sudo pip install Flask-Limiter`
 
  * Copy `feed2twister.conf.example` to `feed2twister.conf` and edit it
    to taste.
+
+ * Change your `secret` in file app.py.
 
 ### Running
 
