@@ -3,9 +3,6 @@ import Image
 import ImageFont
 import ImageDraw
 import ImageFilter
-import hashlib
-from random_words import RandomWords
-
 
 def gen_captcha(text, fnt, fnt_sz, file_name, fmt='JPEG'):
 	"""Generate a captcha image"""
@@ -13,7 +10,7 @@ def gen_captcha(text, fnt, fnt_sz, file_name, fmt='JPEG'):
 	fgcolor = random.randint(0,0xffffff)
 	# make the background color the opposite of fgcolor
 	bgcolor = fgcolor ^ 0xffffff
-	# create a font object 
+	# create a font object
 	font = ImageFont.truetype(fnt,fnt_sz)
 	# determine dimensions of the text
 	dim = font.getsize(text)
@@ -30,11 +27,6 @@ def gen_captcha(text, fnt, fnt_sz, file_name, fmt='JPEG'):
 	im = im.filter(ImageFilter.EDGE_ENHANCE_MORE)
 	# save the image to a file
 	im.save(file_name, format=fmt)
-
-def new_word():
-	rw = RandomWords()
-	word = rw.random_word()
-	return word, hashlib.sha224(word).hexdigest()
 
 if __name__ == '__main__':
 	"""Example: This grabs a random word from the dictionary 'words' (one

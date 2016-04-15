@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>List of all feeds</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div id="container">
+            <div class="title">
+                <h1>Listing feeds</h1>
+            </div>
+            <div id="content">
+              <ul>
+                {% for feed in feeds %}
+                <li>The user <strong>{{ feed[0] }}</strong> posts from <strong>{{ feed[1] }}</strong></li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+

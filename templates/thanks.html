@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Thank you</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div id="container">
+            <div class="title">
+                <h1>Thank you</h1>
+            </div>
+            <div id="content">
+                You have added the user <strong>{{ user }}</strong> that now forwards the RSS from: {{ feedurl }}!
+            </div>
+        </div>
+    </body>
+</html>
