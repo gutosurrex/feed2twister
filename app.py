@@ -9,7 +9,6 @@ import datetime
 import logging
 logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
 
-
 from flask import Flask, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -48,6 +47,7 @@ def index():
     return render_template('form.html', filename = filename, hash = hash)
 
 @app.route('/submitted/', methods=['POST'])
+@limiter.limit("20 per day")
 def submitted():
     user = request.form['user']
     hash = str(request.form['hash'])
@@ -73,11 +73,6 @@ def view():
         outputlist.append(temp)
     db.close()
     return render_template('view.html', feeds = outputlist)
-
-@app.route('/data')
-def names():
-    data = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
-    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
