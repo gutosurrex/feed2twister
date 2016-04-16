@@ -1,10 +1,5 @@
-import os
-import anydbm
-import captcha
-import hashlib
-import random
-import string
-import datetime
+import os, anydbm, captcha, hashlib, random, re
+import string, datetime, usernames, validators
 
 import logging
 logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
@@ -50,18 +45,25 @@ def index():
 @limiter.limit("20 per day")
 def submitted():
     user = request.form['user']
+    if not re.match(r'[a-zA-Z0-9][a-zA-Z0-9_-]+$', user):
+        return render_template('error.html', message = 'Not a proper username!')
+    db = anydbm.open(os.path.expanduser('data/usernames.db'), 'c')
+    if 'user:' + user in db.keys():
+        return render_template('error.html', message = 'This username has already been taken!')
     hash = str(request.form['hash'])
     feedurl = request.form['feedurl']
+    if not validators.url(feedurl):
+        return render_template('error.html', message = 'This is not a valid URL!')
     captcha = request.form['captcha']
     filename = 'static/captchas/' + hash + '.jpg'
     db = anydbm.open(os.path.expanduser('data/used.db'), 'c')
     if hash in db.keys():
-        return render_template('repeated.html')
+        return render_template('error.html', message = 'The captcha code you had has already expired!')
     db[hash] = 'yes'
     db.close()
     if hash == hashlib.sha224(captcha + secret).hexdigest():
         return render_template('thanks.html', user = user, feedurl = feedurl)
-    return render_template('error.html')
+    return render_template('error.html', message = 'The captcha code you have typed did not match!')
 
 @app.route('/view')
 @limiter.limit("200 per day")
@@ -75,6 +77,6 @@ def view():
     return render_template('view.html', feeds = outputlist)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
     app.run()
 

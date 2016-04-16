@@ -9,7 +9,10 @@
                 <h1>Error</h1>
             </div>
             <div id="content">
-                The captcha code you have typed did not match!
+                {{ message }}
+            </div>
+            <div id="content">
+                <a href="{{ url_for('index') }}">Back to form</a>
             </div>
         </div>
     </body>

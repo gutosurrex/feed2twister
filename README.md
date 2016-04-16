@@ -29,6 +29,8 @@ edit it so that it contains similar settings to those you had at `conf.py`
 
  * run `sudo pip install Flask-Limiter`
 
+ * run `sudo pip install validators`
+
  * Copy `feed2twister.conf.example` to `feed2twister.conf` and edit it
    to taste.
 
