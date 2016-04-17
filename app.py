@@ -1,10 +1,10 @@
 import os, anydbm, captcha, hashlib, random, re
-import string, datetime, usernames, validators
+import string, datetime, usernames, validators, json
 
 import logging
 logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
 
-from flask import Flask, jsonify, render_template, request, url_for
+from flask import Flask, render_template, request, url_for
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from random_words import RandomWords
@@ -44,26 +44,34 @@ def index():
 @app.route('/submitted/', methods=['POST'])
 @limiter.limit("20 per day")
 def submitted():
-    user = request.form['user']
+    user = str(request.form['user'])
     #if not re.match(r'[a-zA-Z0-9][a-zA-Z0-9_-]+$', user):
     #    return render_template('error.html', message = 'Not a proper username!')
-    db = anydbm.open(os.path.expanduser('data/usernames.db'), 'c')
+    db = anydbm.open(os.path.expanduser('data/usernames.db'), 'c')     # check if user is available
     #if 'user:' + user in db.keys():
     #    return render_template('error.html', message = 'This username has already been taken!')
-    hash = str(request.form['hash'])
     feedurl = request.form['feedurl']
-    #if not validators.url(feedurl):
+    #if not validators.url(feedurl):     # check url
     #    return render_template('error.html', message = 'This is not a valid URL!')
-    captcha = request.form['captcha']
-    filename = 'static/captchas/' + hash + '.jpg'
+    hash = str(request.form['hash'])    # check if captcha is new
     db = anydbm.open(os.path.expanduser('data/used.db'), 'c')
     if hash in db.keys():
         return render_template('error.html', message = 'The captcha code you had has already expired!')
-    db[hash] = 'yes'
+    db[hash] = 'yes'    # expiring this hash
     db.close()
-    if hash == hashlib.sha224(captcha + secret).hexdigest():
-        return render_template('thanks.html', user = user, feedurl = feedurl)
-    return render_template('error.html', message = 'The captcha code you have typed did not match!')
+    captcha = str(request.form['captcha'])    # check if captcha matches
+    if not hash == hashlib.sha224(captcha + secret).hexdigest():
+        return render_template('error.html', message = 'The captcha code you have typed did not match!')
+    db = anydbm.open(os.path.expanduser('data/feeds.db'), 'c')    # check if user is in feed
+    if user in db.keys():
+        return render_template('error.html', message = 'This user seems to have already been added :P')
+    newuser = { "name" : user,
+                "url" : feedurl
+            }
+    db[user] = json.dumps(newuser)
+    db.close
+    return render_template('thanks.html', user = user, feedurl = feedurl)
+
 
 @app.route('/view')
 @limiter.limit("200 per day")
