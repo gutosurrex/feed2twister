@@ -6,6 +6,8 @@ README.html
 *~
 *.conf
 *.jpg
+*.png
+*.gif
 feed2twister.conf
 *.log
 user_shortener.py
