@@ -14,14 +14,6 @@
                   <input type="text" name="user" /><br />
                   <label for="feedurl">Please enter the feed URL:</label>
                   <input type="text" name="feedurl" /><br />
-                  User's avatar (DEFAULT will load the avatar from the feed)<br />
-                  Note that this is the only opportunity to replace the default!!!<br />
-                  <select name="avatarname">
-                    {% for avatar in avatarlist %}
-                    <option value="{{ avatar }}">{{ avatar }}</option>
-                    {% endfor %}
-                  </select>
-                  <a href="{{ url_for('upload') }}">Upload</a><br /><br />
                   <img src={{ filename }} alt="Captcha" style="height:80px;">
                   <label for="captcha">Please enter the code above:</label>
                   <input type="text" name="captcha" /><br />
