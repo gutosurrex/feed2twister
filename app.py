@@ -74,7 +74,7 @@ def submitted():
     except Exception as e:
         return render_template('error.html', message = 'Error parsing feed: ' + str(e))
     if not 'feed' in parsedfeed:
-        return render_template('error.html', message = 'Feed does not contain basic properties!')
+        return render_template('error.html', message = 'Feed does not contain some basic properties!')
     if not 'title' in parsedfeed['feed']:
         feedtitle = 'No title'
     else:
@@ -85,26 +85,22 @@ def submitted():
     else:
         feeddescription = parsedfeed['feed']['description']
         feeddescription = (feeddescription[:300] + '...') if len(feeddescription) > 300 else feeddescription
-    try:
+    try:    # try to get an image for the feed
         link = parsedfeed['feed']['image']['href']
         if not validators.url(link):
             link = 'http://' + link
         if validators.url(link):
-            print 1
             site = urllib.urlopen(link)
             meta = site.info()
             if int(meta.getheaders("Content-Length")[0]) < 3000000:
-                print 2
                 tempfile = open("/tmp/out.jpg", "wb")
                 tempfile.write(site.read())
                 tempfile.close()
                 im = Image.open('/tmp/out.jpg')
                 im.thumbnail([60, 60])
                 im.save('/tmp/out2.jpg', 'JPEG')
-                if os.path.getsize("/tmp/out2.jpg") < 3800000:
-                    print 3
+                if os.path.getsize("/tmp/out2.jpg") < 3800:
                     with open('/tmp/out2.jpg', 'rb') as image_file:
-                        print 4
                         feedavatar = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read())
     except:
             feedavatar = 'img/genericPerson.png'   # defaults to this if anything goes wrong
@@ -118,13 +114,15 @@ def submitted():
     db.close
     return render_template('thanks.html', user = user, feedurl = feedurl)
 
-
 @app.route('/view')
 @limiter.limit("200 per day")
 def view():
     db = anydbm.open(os.path.expanduser('data/feeds.db'), 'c')
     outputlist = []
     for key, value in db.iteritems():
+        value = json.loads(value)
+        value['avatar'] = (value['avatar'][:100] + '...') if len(value['avatar']) > 100 else value['avatar']
+        value = json.dumps(value)
         temp = [key, value]
         outputlist.append(temp)
     db.close()
