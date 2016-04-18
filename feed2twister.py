@@ -8,9 +8,6 @@ from bitcoinrpc.authproxy import AuthServiceProxy
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 arg_parser = argparse.ArgumentParser(description='Feed2twister is a simple script to post items from RSS/ATOM feeds to Twister.')
-arg_parser.add_argument('--config', '-c', help='Alternate config file. Default is {0}.'.format(os.path.join(SCRIPT_PATH, 'feed2twister.conf')))
-arg_parser.add_argument('--repost-existing', '-f', action='store_true',
-                        help='For debugging purposes. reposts items even if they are marked as already posted. Use with care.')
 arg_parser.add_argument('maxitems', metavar='N', type=int, nargs='?', default=None,
                         help="""Maximum items to post (per feed). Default is 0.
 If there are more than N new items in a feed, "over quota" items get marked as if they were posted (this can be handy when you add a new feed with a long history). Specifically, %(prog)s 0 would make all feeds "catch up" without posting anything.""")
@@ -18,22 +15,8 @@ args = arg_parser.parse_args()
 
 from xdg.BaseDirectory import xdg_config_home
 main_config_file = ConfigParser.ConfigParser()
-if args.config:
-    main_config_file.read([os.path.expanduser(args.config)])
-else:
-    main_config_file.read([os.path.join(SCRIPT_PATH, 'feed2twister.conf'), os.path.join(xdg_config_home, 'feed2twister.conf'), os.path.expanduser('~/.feed2twister.conf')])
+main_config_file.read([os.path.join(SCRIPT_PATH, 'feed2twister.conf'), os.path.join(xdg_config_home, 'feed2twister.conf'), os.path.expanduser('~/.feed2twister.conf')])
 main_config = main_config_file.defaults()
-
-def get_bool_conf_option(option):
-    if option in main_config and main_config[option]:
-        v = main_config[option]
-        return str(v).lower() in ('yes', 'true', 't', '1')
-    return False
-
-def get_array_conf_option(option):
-    if option in main_config and main_config[option]:
-        return main_config[option].split("\n")
-    return []
 
 import logging
 log_level = logging.ERROR
@@ -90,10 +73,11 @@ def get_next_k(twister,username):
         return 0
 
 def main(max_items):
-    db = anydbm.open(os.path.expanduser(main_config['db_filename']),'c')
+    feeddb = anydbm.open(os.path.expanduser(os.path.expanduser('data/feeds.db'), 'c')
+    db = anydbm.open(os.path.expanduser(os.path.expanduser('data/posts.db'), 'c')
     twister = AuthServiceProxy(main_config['rpc_url'])
 
-    for feed_url in get_array_conf_option('feeds'):
+    for feed in feeddb:
         logging.info(feed_url)
         feed = feedparser.parse(feed_url)
         n_items = 0

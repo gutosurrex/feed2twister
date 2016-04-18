@@ -4,7 +4,7 @@ import string, datetime, validators, json, base64, Image
 import usernames, captcha
 
 import logging
-logging.basicConfig(filename='log/output.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='log/app.log', filemode='w', level=logging.DEBUG)
 
 from flask import Flask, render_template, request, url_for
 from flask_limiter import Limiter
